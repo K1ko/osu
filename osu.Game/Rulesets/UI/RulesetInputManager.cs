@@ -28,8 +28,6 @@ namespace osu.Game.Rulesets.UI
     public abstract partial class RulesetInputManager<T> : PassThroughInputManager, ICanAttachHUDPieces, IHasReplayHandler, IHasRecordingHandler
         where T : struct
     {
-        protected override bool AllowRightClickFromLongTouch => false;
-
         public readonly KeyBindingContainer<T> KeyBindingContainer;
 
         [Resolved(CanBeNull = true)]

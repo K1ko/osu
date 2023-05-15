@@ -24,8 +24,6 @@ namespace osu.Game.Rulesets.Catch.Edit.Blueprints
 
         private InputManager inputManager = null!;
 
-        protected override bool IsValidForPlacement => HitObject.Duration > 0;
-
         public JuiceStreamPlacementBlueprint()
         {
             InternalChildren = new Drawable[]
@@ -72,7 +70,7 @@ namespace osu.Game.Rulesets.Catch.Edit.Blueprints
                             return true;
 
                         case MouseButton.Right:
-                            EndPlacement(true);
+                            EndPlacement(HitObject.Duration > 0);
                             return true;
                     }
 

@@ -41,8 +41,6 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders
         [Resolved(CanBeNull = true)]
         private IDistanceSnapProvider snapProvider { get; set; }
 
-        protected override bool IsValidForPlacement => HitObject.Path.HasValidLength;
-
         public SliderPlacementBlueprint()
             : base(new Slider())
         {
@@ -152,7 +150,7 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders
         private void endCurve()
         {
             updateSlider();
-            EndPlacement(true);
+            EndPlacement(HitObject.Path.HasValidLength);
         }
 
         protected override void Update()

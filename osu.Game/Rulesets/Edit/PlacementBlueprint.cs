@@ -9,12 +9,10 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.Input.Bindings;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Compose;
@@ -26,7 +24,7 @@ namespace osu.Game.Rulesets.Edit
     /// <summary>
     /// A blueprint which governs the creation of a new <see cref="HitObject"/> to actualisation.
     /// </summary>
-    public abstract partial class PlacementBlueprint : CompositeDrawable, IKeyBindingHandler<GlobalAction>
+    public abstract partial class PlacementBlueprint : CompositeDrawable
     {
         /// <summary>
         /// Whether the <see cref="HitObject"/> is currently mid-placement, but has not necessarily finished being placed.
@@ -48,15 +46,6 @@ namespace osu.Game.Rulesets.Edit
 
         [Resolved]
         private IPlacementHandler placementHandler { get; set; }
-
-        /// <summary>
-        /// Whether this blueprint is currently in a state that can be committed.
-        /// </summary>
-        /// <remarks>
-        /// Override this with any preconditions that should be double-checked on committing.
-        /// If <c>false</c> is returned and a commit is attempted, the blueprint will be destroyed instead.
-        /// </remarks>
-        protected virtual bool IsValidForPlacement => true;
 
         protected PlacementBlueprint(HitObject hitObject)
         {
@@ -99,7 +88,7 @@ namespace osu.Game.Rulesets.Edit
         /// Signals that the placement of <see cref="HitObject"/> has finished.
         /// This will destroy this <see cref="PlacementBlueprint"/>, and add the HitObject.StartTime to the <see cref="Beatmap"/>.
         /// </summary>
-        /// <param name="commit">Whether the object should be committed. Note that a commit may fail if <see cref="IsValidForPlacement"/> is <c>false</c>.</param>
+        /// <param name="commit">Whether the object should be committed.</param>
         public void EndPlacement(bool commit)
         {
             switch (PlacementActive)
@@ -113,32 +102,8 @@ namespace osu.Game.Rulesets.Edit
                     break;
             }
 
-            placementHandler.EndPlacement(HitObject, IsValidForPlacement && commit);
+            placementHandler.EndPlacement(HitObject, commit);
             PlacementActive = PlacementState.Finished;
-        }
-
-        public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
-        {
-            if (PlacementActive == PlacementState.Waiting)
-                return false;
-
-            switch (e.Action)
-            {
-                case GlobalAction.Select:
-                    EndPlacement(true);
-                    return true;
-
-                case GlobalAction.Back:
-                    EndPlacement(false);
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
-        public void OnReleased(KeyBindingReleaseEvent<GlobalAction> e)
-        {
         }
 
         /// <summary>
