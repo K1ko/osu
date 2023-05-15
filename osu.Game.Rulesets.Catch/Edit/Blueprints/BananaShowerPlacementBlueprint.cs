@@ -17,8 +17,6 @@ namespace osu.Game.Rulesets.Catch.Edit.Blueprints
         private double placementStartTime;
         private double placementEndTime;
 
-        protected override bool IsValidForPlacement => HitObject.Duration > 0;
-
         public BananaShowerPlacementBlueprint()
         {
             InternalChild = outline = new TimeSpanOutline();
@@ -51,7 +49,7 @@ namespace osu.Game.Rulesets.Catch.Edit.Blueprints
                 case PlacementState.Active:
                     if (e.Button != MouseButton.Right) break;
 
-                    EndPlacement(true);
+                    EndPlacement(HitObject.Duration > 0);
                     return true;
             }
 

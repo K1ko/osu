@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using osu.Framework.Bindables;
 using osu.Framework.Input;
 using osuTK.Input;
 
@@ -11,10 +10,6 @@ namespace osu.Game.Input
 {
     public partial class OsuUserInputManager : UserInputManager
     {
-        protected override bool AllowRightClickFromLongTouch => !LocalUserPlaying.Value;
-
-        public readonly BindableBool LocalUserPlaying = new BindableBool();
-
         internal OsuUserInputManager()
         {
         }

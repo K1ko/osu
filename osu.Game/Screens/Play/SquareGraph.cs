@@ -15,7 +15,6 @@ using osuTK;
 using osuTK.Graphics;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Allocation;
-using osu.Framework.Layout;
 using osu.Framework.Threading;
 
 namespace osu.Game.Screens.Play
@@ -52,7 +51,7 @@ namespace osu.Game.Screens.Play
                 if (value == values) return;
 
                 values = value;
-                layout.Invalidate();
+                graphNeedsUpdate = true;
             }
         }
 
@@ -72,25 +71,23 @@ namespace osu.Game.Screens.Play
 
         private ScheduledDelegate scheduledCreate;
 
-        private readonly LayoutValue layout = new LayoutValue(Invalidation.DrawSize | Invalidation.DrawInfo);
+        private bool graphNeedsUpdate;
 
-        public SquareGraph()
-        {
-            AddLayout(layout);
-        }
+        private Vector2 previousDrawSize;
 
         protected override void Update()
         {
             base.Update();
 
-            if (!layout.IsValid)
+            if (graphNeedsUpdate || (values != null && DrawSize != previousDrawSize))
             {
                 columns?.FadeOut(500, Easing.OutQuint).Expire();
 
                 scheduledCreate?.Cancel();
                 scheduledCreate = Scheduler.AddDelayed(RecreateGraph, 500);
 
-                layout.Validate();
+                previousDrawSize = DrawSize;
+                graphNeedsUpdate = false;
             }
         }
 
